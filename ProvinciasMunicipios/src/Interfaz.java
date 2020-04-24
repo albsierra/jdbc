@@ -65,6 +65,11 @@ public class Interfaz extends javax.swing.JFrame {
         provincias.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione una provincia" }));
         provincias.setToolTipText("");
         provincias.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        provincias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                provinciasActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Municipios de la provincia seleccionada:");
 
@@ -141,6 +146,29 @@ public class Interfaz extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void provinciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_provinciasActionPerformed
+        lm.clear();
+        String provin = String.valueOf(provincias.getSelectedItem());
+
+        try {  //   Mostramos los municipios de la provincia seleccionada
+            Statement s = conexion.createStatement();
+            if (provincias.getSelectedIndex() != 0) {
+                String sentencia
+                        = "SELECT nombre"
+                        + " FROM municipios JOIN provincias USING (id_provincia)"
+                        + " WHERE provincia = '" + provin + "'";
+
+                try (ResultSet rsMunicipios = s.executeQuery(sentencia)) {
+                    while (rsMunicipios.next()) {
+                        lm.addElement(rsMunicipios.getString("nombre"));
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }//GEN-LAST:event_provinciasActionPerformed
 
     /**
      * @param args the command line arguments
