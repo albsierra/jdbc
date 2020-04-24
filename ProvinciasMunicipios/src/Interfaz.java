@@ -112,7 +112,14 @@ public class Interfaz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void salirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_salirMouseClicked
-
+        try {   // Si cerramos la ventana, también la conexión con la BD
+            if (conexion != null) {
+                conexion.close();
+                dispose();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
         System.exit(0);
     }//GEN-LAST:event_salirMouseClicked
 
