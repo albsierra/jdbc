@@ -1,7 +1,9 @@
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -53,6 +55,11 @@ public class Interfaz extends javax.swing.JFrame {
         salir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         provincias.setMaximumRowCount(9);
         provincias.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione una provincia" }));
@@ -122,6 +129,18 @@ public class Interfaz extends javax.swing.JFrame {
         }
         System.exit(0);
     }//GEN-LAST:event_salirMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            Statement s = conexion.createStatement();
+            ResultSet rsProvincias = s.executeQuery("SELECT * FROM provincias");
+            while (rsProvincias.next()) {
+                provincias.addItem(rsProvincias.getString("provincia"));
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
