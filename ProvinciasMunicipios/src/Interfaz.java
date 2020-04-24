@@ -1,14 +1,45 @@
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 public class Interfaz extends javax.swing.JFrame {
 
     private DefaultListModel lm;
+    private Connection conexion;
+
+    /*
+     * Cadena de conexión a la base de datos
+     *   tipo de conexión: jdbc
+     *   driver: mysql
+     *   host de la base de datos: localhost
+     *   nombre de la base de datos: municipiosProvincias
+     */
+    private static final String URL = "jdbc:mysql://localhost/municipiosProvincias";
+
+    // Nombre de usuario de acceso a la B.D.
+    private static final String USERNAME = "root";
+
+    // Contraseña de acceso a la B.D.
+    private static final String PASSWORD = "alumno";
+
+    final void abrirConexion() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conexion = DriverManager.getConnection(URL, USERNAME, PASSWORD); // a connection must be closed, so we use close() method
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
 
     public Interfaz() {
         initComponents();
         lm = new DefaultListModel();
         municipios.setModel(lm);
+        abrirConexion();
     }
 
     @SuppressWarnings("unchecked")
