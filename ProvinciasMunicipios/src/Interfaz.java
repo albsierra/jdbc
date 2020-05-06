@@ -6,8 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class Interfaz extends javax.swing.JFrame {
+public class Interfaz extends javax.swing.JFrame implements ListSelectionListener{
 
     private DefaultListModel lm;
     private Connection conexion;
@@ -37,10 +39,17 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
     
-    private boolean insertarCategoria(String _nombre, int _id_provincia) throws SQLException {
+    private boolean insertarMunicipio(String _nombre, int _id_provincia) throws SQLException {
         Statement sentencia = conexion.createStatement();
         String sql = "INSERT INTO municipios(`id_provincia`, `cod_municipio`, `DC`, `nombre`)"
                 + "VALUES (" + _id_provincia + ", 1, 1, '" + _nombre + "')";
+        return (sentencia.executeUpdate(sql) > 0);
+
+    }
+     private boolean borrarMunicipio(String _nombre, int _id_provincia) throws SQLException {
+        Statement sentencia = conexion.createStatement();
+        String sql = "DELETE FROM municipios "
+                + "WHERE `id_provincia` = " + _id_provincia + " AND `nombre` = '" + _nombre + "'";
         return (sentencia.executeUpdate(sql) > 0);
 
     }
@@ -68,11 +77,36 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
 
+    private int getIdProvinciaFromSelect() {
+        String provincia = String.valueOf(provincias.getSelectedItem());
+        int _id_provincia = 0;
+
+        try {  //   Mostramos los municipios de la provincia seleccionada
+            Statement s = conexion.createStatement();
+            if (provincias.getSelectedIndex() != 0) {
+                String sentencia
+                        = "SELECT id_provincia"
+                        + " FROM provincias"
+                        + " WHERE provincia = '" + provincia + "'";
+
+                try (ResultSet rsProvincias = s.executeQuery(sentencia)) {
+                    while (rsProvincias.next()) {
+                        _id_provincia = rsProvincias.getInt("id_provincia");
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+        return _id_provincia;
+    }
+    
     public Interfaz() {
         initComponents();
         lm = new DefaultListModel();
         municipios.setModel(lm);
         abrirConexion();
+        municipios.addListSelectionListener(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -87,6 +121,7 @@ public class Interfaz extends javax.swing.JFrame {
         jButtonInsertarMunicipio = new javax.swing.JButton();
         jTextNuevoMunicipio = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jButtonDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -107,6 +142,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel2.setText("Municipios de la provincia seleccionada:");
 
+        municipios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(municipios);
 
         salir.setText("Salir");
@@ -129,10 +165,23 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel1.setText("Nuevo Municipio:");
         jLabel1.setName("jLabelNuevoMunicipio"); // NOI18N
 
+        jButtonDelete.setText("Borrar seleccionado");
+        jButtonDelete.setEnabled(false);
+        jButtonDelete.setName("jButtonDelete"); // NOI18N
+        jButtonDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonDeleteMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(162, 162, 162)
+                .addComponent(salir)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,12 +196,12 @@ public class Interfaz extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(provincias, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 110, Short.MAX_VALUE)))
+                        .addGap(0, 110, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonDelete)
+                        .addGap(105, 105, 105)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(salir)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,15 +212,20 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonDelete)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonInsertarMunicipio)
                     .addComponent(jTextNuevoMunicipio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
                 .addComponent(salir)
                 .addContainerGap())
         );
+
+        jButtonDelete.getAccessibleContext().setAccessibleName("jButtonDelete");
+        jButtonDelete.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -205,32 +259,28 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_provinciasActionPerformed
 
     private void jButtonInsertarMunicipioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonInsertarMunicipioMouseClicked
-        String provincia = String.valueOf(provincias.getSelectedItem());
-        int _id_provincia = 0;
-
-        try {  //   Mostramos los municipios de la provincia seleccionada
-            Statement s = conexion.createStatement();
-            if (provincias.getSelectedIndex() != 0) {
-                String sentencia
-                        = "SELECT id_provincia"
-                        + " FROM provincias"
-                        + " WHERE provincia = '" + provincia + "'";
-
-                try (ResultSet rsProvincias = s.executeQuery(sentencia)) {
-                    while (rsProvincias.next()) {
-                        _id_provincia = rsProvincias.getInt("id_provincia");
-                    }
-                    if(_id_provincia > 0) {
-                        insertarCategoria(jTextNuevoMunicipio.getText(), _id_provincia);
-                    }
-                }
+        int _id_provincia = getIdProvinciaFromSelect();
+        if (_id_provincia > 0) {
+            try {
+                insertarMunicipio(jTextNuevoMunicipio.getText(), _id_provincia);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
         actualizarListaMunicipios();
-
     }//GEN-LAST:event_jButtonInsertarMunicipioMouseClicked
+
+    private void jButtonDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonDeleteMouseClicked
+        int _id_provincia = getIdProvinciaFromSelect();
+        if (_id_provincia > 0) {
+            try {
+                borrarMunicipio(String.valueOf(municipios.getSelectedValue()), _id_provincia);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        }
+        actualizarListaMunicipios();
+    }//GEN-LAST:event_jButtonDeleteMouseClicked
 
     /**
      * @param args the command line arguments
@@ -268,6 +318,7 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonInsertarMunicipio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -277,4 +328,16 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JComboBox provincias;
     private javax.swing.JButton salir;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (municipios.getSelectedIndex() == -1) {
+            //No selection.
+            jButtonDelete.setEnabled(false);
+        } else {
+            //Selection.
+            jButtonDelete.setEnabled(true);
+        }
+    }
+
 }
