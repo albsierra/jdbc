@@ -100,8 +100,18 @@ public class Peliculas extends javax.swing.JFrame {
         jLabelDirector.setText("Director:");
 
         jButtonSiguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/siguiente.png"))); // NOI18N
+        jButtonSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSiguienteActionPerformed(evt);
+            }
+        });
 
         jButtonAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anterior.png"))); // NOI18N
+        jButtonAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnteriorActionPerformed(evt);
+            }
+        });
 
         jButtonGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/grabar.png"))); // NOI18N
 
@@ -182,6 +192,28 @@ public class Peliculas extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnteriorActionPerformed
+        try {
+            if (!rs.isFirst()) {
+                rs.previous();
+                cargaCamposPelicula();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonAnteriorActionPerformed
+
+    private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
+        try {
+            if (!rs.isLast()) {
+                rs.next();
+                cargaCamposPelicula();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAnadir;
