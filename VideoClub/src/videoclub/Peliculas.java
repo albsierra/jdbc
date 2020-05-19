@@ -5,17 +5,39 @@
  */
 package videoclub;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jose
  */
 public class Peliculas extends javax.swing.JFrame {
+    
+    private final Connection conexion;
+    private ResultSet rs;
+    
+    private void cargarPeliculas() {
+        try {
+            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            rs = s.executeQuery("select * from peliculas");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
 
     /**
      * Creates new form Peliculas
+     * @param conexion La conexión que se utilizará para el acceso a la B.D.
      */
-    public Peliculas() {
+    public Peliculas(Connection conexion) {
+        this.conexion = conexion;
         initComponents();
+        cargarPeliculas();
     }
 
     /**
