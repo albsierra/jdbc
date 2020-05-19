@@ -114,6 +114,11 @@ public class Peliculas extends javax.swing.JFrame {
         });
 
         jButtonGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/grabar.png"))); // NOI18N
+        jButtonGrabar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGrabarActionPerformed(evt);
+            }
+        });
 
         jButtonAnadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anadir.png"))); // NOI18N
 
@@ -214,6 +219,18 @@ public class Peliculas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
+
+    private void jButtonGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGrabarActionPerformed
+        try {
+            rs.updateString("titulo", jTextTitulo.getText());
+            rs.updateString("genero", jTextGenero.getText());
+            rs.updateInt("duracion", Integer.parseInt(jTextDuracion.getText()));
+            rs.updateString("director", jTextDirector.getText());
+            rs.updateRow();
+        } catch (NumberFormatException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonGrabarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAnadir;
