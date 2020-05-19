@@ -121,6 +121,11 @@ public class Peliculas extends javax.swing.JFrame {
         });
 
         jButtonAnadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anadir.png"))); // NOI18N
+        jButtonAnadir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnadirActionPerformed(evt);
+            }
+        });
 
         jButtonEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/eliminar.png"))); // NOI18N
 
@@ -226,11 +231,32 @@ public class Peliculas extends javax.swing.JFrame {
             rs.updateString("genero", jTextGenero.getText());
             rs.updateInt("duracion", Integer.parseInt(jTextDuracion.getText()));
             rs.updateString("director", jTextDirector.getText());
-            rs.updateRow();
+
+            // Si previamente se le había asignado un ID es que ya existía
+            // por lo que se está intentando modificar
+            if (rs.getInt("id") > 0) {
+                rs.updateRow();
+            } else {
+                rs.insertRow();
+                rs.last();
+                cargaCamposPelicula();
+                visibilizarBotonera(true);
+            }
+
         } catch (NumberFormatException | SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_jButtonGrabarActionPerformed
+
+    private void jButtonAnadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnadirActionPerformed
+        try {
+            rs.moveToInsertRow();
+            cargaCamposPelicula();
+            visibilizarBotonera(false);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonAnadirActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAnadir;
@@ -249,4 +275,11 @@ public class Peliculas extends javax.swing.JFrame {
     private javax.swing.JTextField jTextID;
     private javax.swing.JTextField jTextTitulo;
     // End of variables declaration//GEN-END:variables
+
+    private void visibilizarBotonera(boolean b) {
+        jButtonAnterior.setVisible(b);
+        jButtonSiguiente.setVisible(b);
+        jButtonAnadir.setVisible(b);
+        jButtonEliminar.setVisible(b);
+    }
 }
