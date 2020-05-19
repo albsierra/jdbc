@@ -193,6 +193,9 @@
           <Image iconType="3" name="/videoclub/images/eliminar.png"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEliminarActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

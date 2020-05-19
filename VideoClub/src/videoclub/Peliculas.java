@@ -128,6 +128,11 @@ public class Peliculas extends javax.swing.JFrame {
         });
 
         jButtonEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/eliminar.png"))); // NOI18N
+        jButtonEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -257,6 +262,17 @@ public class Peliculas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }//GEN-LAST:event_jButtonAnadirActionPerformed
+
+    private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
+        try {
+            if (JOptionPane.showConfirmDialog(rootPane, "¿Desea eliminar?", "Confirmación", JOptionPane.YES_NO_OPTION) == 0) {
+                rs.deleteRow();
+                cargaCamposPelicula();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonEliminarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAnadir;
