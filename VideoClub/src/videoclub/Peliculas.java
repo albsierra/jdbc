@@ -30,14 +30,34 @@ public class Peliculas extends javax.swing.JFrame {
 
     }
 
+    private void cargaCamposPelicula() {
+        try {
+            jTextID.setText(rs.getInt("id") + "");
+            jTextTitulo.setText(rs.getString("titulo"));
+            jTextGenero.setText(rs.getString("genero"));
+            jTextDuracion.setText(rs.getInt("duracion") + "");
+            jTextDirector.setText(rs.getString("director"));
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    
     /**
      * Creates new form Peliculas
      * @param conexion La conexión que se utilizará para el acceso a la B.D.
      */
     public Peliculas(Connection conexion) {
         this.conexion = conexion;
-        initComponents();
         cargarPeliculas();
+        initComponents();
+        try {
+            if (rs.next()) {
+                //Mostrar la informacion de la 1ª peli
+                cargaCamposPelicula();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }
 
     /**
@@ -50,26 +70,26 @@ public class Peliculas extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabelID = new javax.swing.JLabel();
-        id = new javax.swing.JTextField();
+        jTextID = new javax.swing.JTextField();
         jLabelTitulo = new javax.swing.JLabel();
-        titulo = new javax.swing.JTextField();
+        jTextTitulo = new javax.swing.JTextField();
         jLabelGenero = new javax.swing.JLabel();
         jTextGenero = new javax.swing.JTextField();
         jLabelDuracion = new javax.swing.JLabel();
         jTextDuracion = new javax.swing.JTextField();
         jLabelDirector = new javax.swing.JLabel();
         jTextDirector = new javax.swing.JTextField();
-        siguiente = new javax.swing.JButton();
+        jButtonSiguiente = new javax.swing.JButton();
         jButtonAnterior = new javax.swing.JButton();
         jButtonGrabar = new javax.swing.JButton();
         jButtonAnadir = new javax.swing.JButton();
-        jTextEliminar = new javax.swing.JButton();
+        jButtonEliminar = new javax.swing.JButton();
 
         setTitle("Películas");
 
         jLabelID.setText("ID:");
 
-        id.setEditable(false);
+        jTextID.setEditable(false);
 
         jLabelTitulo.setText("Título:");
 
@@ -79,7 +99,7 @@ public class Peliculas extends javax.swing.JFrame {
 
         jLabelDirector.setText("Director:");
 
-        siguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/siguiente.png"))); // NOI18N
+        jButtonSiguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/siguiente.png"))); // NOI18N
 
         jButtonAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anterior.png"))); // NOI18N
 
@@ -87,7 +107,7 @@ public class Peliculas extends javax.swing.JFrame {
 
         jButtonAnadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anadir.png"))); // NOI18N
 
-        jTextEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/eliminar.png"))); // NOI18N
+        jButtonEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/eliminar.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,13 +119,13 @@ public class Peliculas extends javax.swing.JFrame {
                         .addContainerGap(38, Short.MAX_VALUE)
                         .addComponent(jButtonAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonGrabar, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAnadir, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButtonEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,9 +138,9 @@ public class Peliculas extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextID, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(0, 0, Short.MAX_VALUE))
-                                .addComponent(titulo)
+                                .addComponent(jTextTitulo)
                                 .addComponent(jTextGenero)
                                 .addComponent(jTextDirector))
                             .addComponent(jTextDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -132,11 +152,11 @@ public class Peliculas extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelID)
-                    .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelTitulo)
-                    .addComponent(titulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelGenero)
@@ -155,8 +175,8 @@ public class Peliculas extends javax.swing.JFrame {
                         .addComponent(jButtonAnterior)
                         .addComponent(jButtonGrabar, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jButtonAnadir)
-                        .addComponent(siguiente))
-                    .addComponent(jTextEliminar))
+                        .addComponent(jButtonSiguiente))
+                    .addComponent(jButtonEliminar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -164,10 +184,11 @@ public class Peliculas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField id;
     private javax.swing.JButton jButtonAnadir;
     private javax.swing.JButton jButtonAnterior;
+    private javax.swing.JButton jButtonEliminar;
     private javax.swing.JButton jButtonGrabar;
+    private javax.swing.JButton jButtonSiguiente;
     private javax.swing.JLabel jLabelDirector;
     private javax.swing.JLabel jLabelDuracion;
     private javax.swing.JLabel jLabelGenero;
@@ -175,9 +196,8 @@ public class Peliculas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTitulo;
     private javax.swing.JTextField jTextDirector;
     private javax.swing.JTextField jTextDuracion;
-    private javax.swing.JButton jTextEliminar;
     private javax.swing.JTextField jTextGenero;
-    private javax.swing.JButton siguiente;
-    private javax.swing.JTextField titulo;
+    private javax.swing.JTextField jTextID;
+    private javax.swing.JTextField jTextTitulo;
     // End of variables declaration//GEN-END:variables
 }
