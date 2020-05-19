@@ -5,17 +5,51 @@
  */
 package videoclub;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
- * @author alumno
+ * @author José López Noguera
  */
 public class Videoclub extends javax.swing.JFrame {
+
+    /*
+     * Cadena de conexión a la base de datos
+     *   tipo de conexión: jdbc
+     *   driver: mysql
+     *   host de la base de datos: localhost
+     *   nombre de la base de datos: videoclub
+     */
+    private static final String URL = "jdbc:mysql://localhost/videoclub";
+
+    // Nombre de usuario de acceso a la B.D.
+    private static final String USERNAME = "root";
+
+    // Contraseña de acceso a la B.D.
+    private static final String PASSWORD = "alumno";
+
+    Connection conexion;
+    
+    private void abrirConexion(){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conexion=DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (ClassNotFoundException | SQLException e){
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+        
+    }
+    
 
     /**
      * Creates new form Videoclub
      */
     public Videoclub() {
         initComponents();
+        abrirConexion();
     }
 
     /**
