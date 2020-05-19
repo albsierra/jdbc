@@ -46,10 +46,21 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
         return (sentencia.executeUpdate(sql) > 0);
 
     }
-     private boolean borrarMunicipio(String _nombre, int _id_provincia) throws SQLException {
+    
+    private boolean borrarMunicipio(String _nombre, int _id_provincia) throws SQLException {
         Statement sentencia = conexion.createStatement();
         String sql = "DELETE FROM municipios "
                 + "WHERE `id_provincia` = " + _id_provincia + " AND `nombre` = '" + _nombre + "'";
+        return (sentencia.executeUpdate(sql) > 0);
+
+    }
+     
+     
+    private boolean actualizarMunicipio(String _anteriorNombre, int _id_provincia, String _actualNombre) throws SQLException {
+        Statement sentencia = conexion.createStatement();
+        String sql = "UPDATE municipios "
+                + "SET `nombre` = '" + _actualNombre + "'"
+                + "WHERE `id_provincia` = " + _id_provincia + " AND `nombre` = '" + _anteriorNombre + "'";
         return (sentencia.executeUpdate(sql) > 0);
 
     }
@@ -122,6 +133,8 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
         jTextNuevoMunicipio = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButtonDelete = new javax.swing.JButton();
+        jButtonModificarMunicipio = new javax.swing.JButton();
+        jTextModificaNombreMunicipio = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -174,33 +187,53 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
             }
         });
 
+        jButtonModificarMunicipio.setText("Modificar");
+        jButtonModificarMunicipio.setName("jButtonInsertarMunicipio"); // NOI18N
+        jButtonModificarMunicipio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonModificarMunicipioMouseClicked(evt);
+            }
+        });
+
+        jTextModificaNombreMunicipio.setName("jTextNuevoMunicipio"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(salir)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(7, 7, 7)
-                        .addComponent(jTextNuevoMunicipio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonInsertarMunicipio))
+                        .addGap(162, 162, 162)
+                        .addComponent(salir)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(provincias, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 110, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonDelete)
-                        .addGap(105, 105, 105)))
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(provincias, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButtonDelete)
+                                .addGap(105, 105, 105))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jTextNuevoMunicipio, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jTextModificaNombreMunicipio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButtonInsertarMunicipio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonModificarMunicipio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -214,12 +247,16 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonDelete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonInsertarMunicipio)
                     .addComponent(jTextNuevoMunicipio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addGap(27, 27, 27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonModificarMunicipio)
+                    .addComponent(jTextModificaNombreMunicipio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addComponent(salir)
                 .addContainerGap())
         );
@@ -268,6 +305,7 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
             }
         }
         actualizarListaMunicipios();
+        jTextNuevoMunicipio.setText("");
     }//GEN-LAST:event_jButtonInsertarMunicipioMouseClicked
 
     private void jButtonDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonDeleteMouseClicked
@@ -281,6 +319,19 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
         }
         actualizarListaMunicipios();
     }//GEN-LAST:event_jButtonDeleteMouseClicked
+
+    private void jButtonModificarMunicipioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonModificarMunicipioMouseClicked
+        int _id_provincia = getIdProvinciaFromSelect();
+        if (_id_provincia > 0) {
+            try {
+                actualizarMunicipio(String.valueOf(municipios.getSelectedValue()), _id_provincia, jTextModificaNombreMunicipio.getText());
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        }
+        actualizarListaMunicipios();
+        jTextModificaNombreMunicipio.setText("");
+    }//GEN-LAST:event_jButtonModificarMunicipioMouseClicked
 
     /**
      * @param args the command line arguments
@@ -320,9 +371,11 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonInsertarMunicipio;
+    private javax.swing.JButton jButtonModificarMunicipio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextModificaNombreMunicipio;
     private javax.swing.JTextField jTextNuevoMunicipio;
     private javax.swing.JList municipios;
     private javax.swing.JComboBox provincias;
@@ -334,9 +387,13 @@ public class Interfaz extends javax.swing.JFrame implements ListSelectionListene
         if (municipios.getSelectedIndex() == -1) {
             //No selection.
             jButtonDelete.setEnabled(false);
+            jButtonModificarMunicipio.setEnabled(false);
+            jTextModificaNombreMunicipio.setText("");
         } else {
             //Selection.
             jButtonDelete.setEnabled(true);
+            jButtonModificarMunicipio.setEnabled(true);
+            jTextModificaNombreMunicipio.setText(String.valueOf(municipios.getSelectedValue()));
         }
     }
 
