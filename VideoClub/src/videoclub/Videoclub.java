@@ -110,7 +110,7 @@ public class Videoclub extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonMenuPeliculasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMenuPeliculasActionPerformed
-        Peliculas peliculas = new Peliculas();
+        Peliculas peliculas = new Peliculas(this.conexion);
         peliculas.setVisible(true);
     }//GEN-LAST:event_jButtonMenuPeliculasActionPerformed
 
