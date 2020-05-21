@@ -5,6 +5,8 @@
  */
 package videoclubjpa.entities;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -32,6 +35,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Peliculas.findByDuracion", query = "SELECT p FROM Peliculas p WHERE p.duracion = :duracion")
     , @NamedQuery(name = "Peliculas.findByDirector", query = "SELECT p FROM Peliculas p WHERE p.director = :director")})
 public class Peliculas implements Serializable {
+
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -72,7 +78,9 @@ public class Peliculas implements Serializable {
     }
 
     public void setId(Integer id) {
+        Integer oldId = this.id;
         this.id = id;
+        changeSupport.firePropertyChange("id", oldId, id);
     }
 
     public String getTitulo() {
@@ -80,7 +88,9 @@ public class Peliculas implements Serializable {
     }
 
     public void setTitulo(String titulo) {
+        String oldTitulo = this.titulo;
         this.titulo = titulo;
+        changeSupport.firePropertyChange("titulo", oldTitulo, titulo);
     }
 
     public String getGenero() {
@@ -88,7 +98,9 @@ public class Peliculas implements Serializable {
     }
 
     public void setGenero(String genero) {
+        String oldGenero = this.genero;
         this.genero = genero;
+        changeSupport.firePropertyChange("genero", oldGenero, genero);
     }
 
     public int getDuracion() {
@@ -96,7 +108,9 @@ public class Peliculas implements Serializable {
     }
 
     public void setDuracion(int duracion) {
+        int oldDuracion = this.duracion;
         this.duracion = duracion;
+        changeSupport.firePropertyChange("duracion", oldDuracion, duracion);
     }
 
     public String getDirector() {
@@ -104,7 +118,9 @@ public class Peliculas implements Serializable {
     }
 
     public void setDirector(String director) {
+        String oldDirector = this.director;
         this.director = director;
+        changeSupport.firePropertyChange("director", oldDirector, director);
     }
 
     @Override
@@ -130,6 +146,14 @@ public class Peliculas implements Serializable {
     @Override
     public String toString() {
         return "videoclubjpa.entities.Peliculas[ id=" + id + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }
