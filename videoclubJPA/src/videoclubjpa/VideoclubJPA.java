@@ -5,6 +5,9 @@
  */
 package videoclubjpa;
 
+import javax.swing.JFrame;
+import videoclubjpa.views.PeliculasView;
+
 /**
  *
  * @author alumno
@@ -15,7 +18,11 @@ public class VideoclubJPA {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        JFrame peliculasFrame = new JFrame();
+        peliculasFrame.setContentPane(new PeliculasView());
+        peliculasFrame.setBounds(100, 100, 640, 480);
+        peliculasFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        peliculasFrame.setVisible(true);
     }
     
 }
