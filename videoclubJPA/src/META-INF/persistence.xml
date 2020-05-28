@@ -3,6 +3,7 @@
   <persistence-unit name="videoclubJPAPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>videoclubjpa.entities.Peliculas</class>
+    <class>videoclubjpa.entities.Reservas</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/videoclub?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

@@ -8,7 +8,9 @@ package videoclubjpa.entities;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,9 +18,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Peliculas.findAll", query = "SELECT p FROM Peliculas p")
     , @NamedQuery(name = "Peliculas.findById", query = "SELECT p FROM Peliculas p WHERE p.id = :id")
     , @NamedQuery(name = "Peliculas.findByTitulo", query = "SELECT p FROM Peliculas p WHERE p.titulo = :titulo")
+    , @NamedQuery(name = "Peliculas.findInTitulo", query = "SELECT p FROM Peliculas p WHERE p.titulo LIKE :titulo")
     , @NamedQuery(name = "Peliculas.findByGenero", query = "SELECT p FROM Peliculas p WHERE p.genero = :genero")
     , @NamedQuery(name = "Peliculas.findByDuracion", query = "SELECT p FROM Peliculas p WHERE p.duracion = :duracion")
     , @NamedQuery(name = "Peliculas.findByDirector", query = "SELECT p FROM Peliculas p WHERE p.director = :director")})
@@ -57,6 +62,8 @@ public class Peliculas implements Serializable {
     @Basic(optional = false)
     @Column(name = "director")
     private String director;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPelicula")
+    private Collection<Reservas> reservasCollection;
 
     public Peliculas() {
     }
@@ -121,6 +128,15 @@ public class Peliculas implements Serializable {
         String oldDirector = this.director;
         this.director = director;
         changeSupport.firePropertyChange("director", oldDirector, director);
+    }
+
+    @XmlTransient
+    public Collection<Reservas> getReservasCollection() {
+        return reservasCollection;
+    }
+
+    public void setReservasCollection(Collection<Reservas> reservasCollection) {
+        this.reservasCollection = reservasCollection;
     }
 
     @Override
