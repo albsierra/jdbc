@@ -7,12 +7,9 @@ package com.iesdosmares.videoclubmongo;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import org.bson.Document;
 
 /**
  *
@@ -31,8 +28,6 @@ public class Videoclub extends javax.swing.JFrame {
         String connectionString = System.getProperty("mongodb.uri");
         try {
             conexion = MongoClients.create(connectionString);
-            List<Document> databases = conexion.listDatabases().into(new ArrayList<>());
-            databases.forEach(db -> System.out.println(db.toJson()));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -106,8 +101,8 @@ public class Videoclub extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonMenuPeliculasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMenuPeliculasActionPerformed
-//        Peliculas peliculas = new Peliculas(this.conexion);
-//        peliculas.setVisible(true);
+        Peliculas peliculas = new Peliculas(this.conexion);
+        peliculas.setVisible(true);
     }//GEN-LAST:event_jButtonMenuPeliculasActionPerformed
 
     /**

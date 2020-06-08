@@ -5,11 +5,14 @@
  */
 package com.iesdosmares.videoclubmongo;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import org.bson.Document;
 
 /**
  *
@@ -17,27 +20,30 @@ import javax.swing.JOptionPane;
  */
 public class Peliculas extends javax.swing.JFrame {
     
-    private final Connection conexion;
-    private ResultSet rs;
+    private final MongoClient conexion;
+    private List<Document> rs;
+    private int index;
     
     private void cargarPeliculas() {
         try {
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = s.executeQuery("select * from peliculas");
-        } catch (SQLException e) {
+            MongoDatabase videoclubDB = conexion.getDatabase("videoclub");
+            MongoCollection<Document> peliculasCollection = videoclubDB.getCollection("peliculas");
+            rs = peliculasCollection.find().into(new ArrayList<>());
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
 
     }
 
     private void cargaCamposPelicula() {
+        Document doc = rs.get(index);
         try {
-            jTextID.setText(rs.getInt("id") + "");
-            jTextTitulo.setText(rs.getString("titulo"));
-            jTextGenero.setText(rs.getString("genero"));
-            jTextDuracion.setText(rs.getInt("duracion") + "");
-            jTextDirector.setText(rs.getString("director"));
-        } catch (SQLException e) {
+            jTextID.setText(doc.getInteger("id").toString());
+            jTextTitulo.setText(doc.getString("titulo"));
+            jTextGenero.setText(doc.getString("genero"));
+            jTextDuracion.setText(doc.getInteger("duracion").toString());
+            jTextDirector.setText(doc.getString("director"));
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
@@ -46,17 +52,13 @@ public class Peliculas extends javax.swing.JFrame {
      * Creates new form Peliculas
      * @param conexion La conexión que se utilizará para el acceso a la B.D.
      */
-    public Peliculas(Connection conexion) {
+    public Peliculas(MongoClient conexion) {
         this.conexion = conexion;
         cargarPeliculas();
         initComponents();
-        try {
-            if (rs.next()) {
-                //Mostrar la informacion de la 1ª peli
-                cargaCamposPelicula();
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+        if (!rs.isEmpty()) {
+            //Mostrar la informacion de la 1ª peli
+            cargaCamposPelicula();
         }
     }
 
@@ -99,35 +101,35 @@ public class Peliculas extends javax.swing.JFrame {
 
         jLabelDirector.setText("Director:");
 
-        jButtonSiguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/siguiente.png"))); // NOI18N
+        jButtonSiguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/iesdosmares/videoclubmongo/images/siguiente.png"))); // NOI18N
         jButtonSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSiguienteActionPerformed(evt);
             }
         });
 
-        jButtonAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anterior.png"))); // NOI18N
+        jButtonAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/iesdosmares/videoclubmongo/images/anterior.png"))); // NOI18N
         jButtonAnterior.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAnteriorActionPerformed(evt);
             }
         });
 
-        jButtonGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/grabar.png"))); // NOI18N
+        jButtonGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/iesdosmares/videoclubmongo/images/grabar.png"))); // NOI18N
         jButtonGrabar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonGrabarActionPerformed(evt);
             }
         });
 
-        jButtonAnadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/anadir.png"))); // NOI18N
+        jButtonAnadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/iesdosmares/videoclubmongo/images/anadir.png"))); // NOI18N
         jButtonAnadir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAnadirActionPerformed(evt);
             }
         });
 
-        jButtonEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/videoclub/images/eliminar.png"))); // NOI18N
+        jButtonEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/iesdosmares/videoclubmongo/images/eliminar.png"))); // NOI18N
         jButtonEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonEliminarActionPerformed(evt);
@@ -209,69 +211,69 @@ public class Peliculas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnteriorActionPerformed
-        try {
-            if (!rs.isFirst()) {
-                rs.previous();
-                cargaCamposPelicula();
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+//        try {
+//            if (!rs.isFirst()) {
+//                rs.previous();
+//                cargaCamposPelicula();
+//            }
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
     }//GEN-LAST:event_jButtonAnteriorActionPerformed
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
-        try {
-            if (!rs.isLast()) {
-                rs.next();
-                cargaCamposPelicula();
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+//        try {
+//            if (!rs.isLast()) {
+//                rs.next();
+//                cargaCamposPelicula();
+//            }
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jButtonGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGrabarActionPerformed
-        try {
-            rs.updateString("titulo", jTextTitulo.getText());
-            rs.updateString("genero", jTextGenero.getText());
-            rs.updateInt("duracion", Integer.parseInt(jTextDuracion.getText()));
-            rs.updateString("director", jTextDirector.getText());
-
-            // Si previamente se le había asignado un ID es que ya existía
-            // por lo que se está intentando modificar
-            if (rs.getInt("id") > 0) {
-                rs.updateRow();
-            } else {
-                rs.insertRow();
-                rs.last();
-                cargaCamposPelicula();
-                visibilizarBotonera(true);
-            }
-
-        } catch (NumberFormatException | SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+//        try {
+//            rs.updateString("titulo", jTextTitulo.getText());
+//            rs.updateString("genero", jTextGenero.getText());
+//            rs.updateInt("duracion", Integer.parseInt(jTextDuracion.getText()));
+//            rs.updateString("director", jTextDirector.getText());
+//
+//            // Si previamente se le había asignado un ID es que ya existía
+//            // por lo que se está intentando modificar
+//            if (rs.getInt("id") > 0) {
+//                rs.updateRow();
+//            } else {
+//                rs.insertRow();
+//                rs.last();
+//                cargaCamposPelicula();
+//                visibilizarBotonera(true);
+//            }
+//
+//        } catch (NumberFormatException | SQLException e) {
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
     }//GEN-LAST:event_jButtonGrabarActionPerformed
 
     private void jButtonAnadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnadirActionPerformed
-        try {
-            rs.moveToInsertRow();
-            cargaCamposPelicula();
-            visibilizarBotonera(false);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+//        try {
+//            rs.moveToInsertRow();
+//            cargaCamposPelicula();
+//            visibilizarBotonera(false);
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
     }//GEN-LAST:event_jButtonAnadirActionPerformed
 
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
-        try {
-            if (JOptionPane.showConfirmDialog(rootPane, "¿Desea eliminar?", "Confirmación", JOptionPane.YES_NO_OPTION) == 0) {
-                rs.deleteRow();
-                cargaCamposPelicula();
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+//        try {
+//            if (JOptionPane.showConfirmDialog(rootPane, "¿Desea eliminar?", "Confirmación", JOptionPane.YES_NO_OPTION) == 0) {
+//                rs.deleteRow();
+//                cargaCamposPelicula();
+//            }
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
     }//GEN-LAST:event_jButtonEliminarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

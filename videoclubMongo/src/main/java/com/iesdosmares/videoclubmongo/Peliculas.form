@@ -150,7 +150,7 @@
     <Component class="javax.swing.JButton" name="jButtonSiguiente">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/videoclub/images/siguiente.png"/>
+          <Image iconType="3" name="/com/iesdosmares/videoclubmongo/images/siguiente.png"/>
         </Property>
       </Properties>
       <Events>
@@ -160,7 +160,7 @@
     <Component class="javax.swing.JButton" name="jButtonAnterior">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/videoclub/images/anterior.png"/>
+          <Image iconType="3" name="/com/iesdosmares/videoclubmongo/images/anterior.png"/>
         </Property>
       </Properties>
       <Events>
@@ -170,7 +170,7 @@
     <Component class="javax.swing.JButton" name="jButtonGrabar">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/videoclub/images/grabar.png"/>
+          <Image iconType="3" name="/com/iesdosmares/videoclubmongo/images/grabar.png"/>
         </Property>
       </Properties>
       <Events>
@@ -180,7 +180,7 @@
     <Component class="javax.swing.JButton" name="jButtonAnadir">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/videoclub/images/anadir.png"/>
+          <Image iconType="3" name="/com/iesdosmares/videoclubmongo/images/anadir.png"/>
         </Property>
       </Properties>
       <Events>
@@ -190,7 +190,7 @@
     <Component class="javax.swing.JButton" name="jButtonEliminar">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/videoclub/images/eliminar.png"/>
+          <Image iconType="3" name="/com/iesdosmares/videoclubmongo/images/eliminar.png"/>
         </Property>
       </Properties>
       <Events>
