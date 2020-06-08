@@ -6,13 +6,18 @@
 package com.iesdosmares.videoclubmongo;
 
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
+import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  *
@@ -21,13 +26,14 @@ import org.bson.Document;
 public class Peliculas extends javax.swing.JFrame {
     
     private final MongoClient conexion;
+    private MongoCollection<Document> peliculasCollection;
     private List<Document> rs;
     private int index;
     
     private void cargarPeliculas() {
         try {
             MongoDatabase videoclubDB = conexion.getDatabase("videoclub");
-            MongoCollection<Document> peliculasCollection = videoclubDB.getCollection("peliculas");
+            peliculasCollection = videoclubDB.getCollection("peliculas");
             rs = peliculasCollection.find().into(new ArrayList<>());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -90,8 +96,6 @@ public class Peliculas extends javax.swing.JFrame {
         setTitle("Películas");
 
         jLabelID.setText("ID:");
-
-        jTextID.setEditable(false);
 
         jLabelTitulo.setText("Título:");
 
@@ -225,36 +229,41 @@ public class Peliculas extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jButtonGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGrabarActionPerformed
-//        try {
-//            rs.updateString("titulo", jTextTitulo.getText());
-//            rs.updateString("genero", jTextGenero.getText());
-//            rs.updateInt("duracion", Integer.parseInt(jTextDuracion.getText()));
-//            rs.updateString("director", jTextDirector.getText());
-//
-//            // Si previamente se le había asignado un ID es que ya existía
-//            // por lo que se está intentando modificar
-//            if (rs.getInt("id") > 0) {
-//                rs.updateRow();
-//            } else {
-//                rs.insertRow();
-//                rs.last();
-//                cargaCamposPelicula();
-//                visibilizarBotonera(true);
-//            }
-//
-//        } catch (NumberFormatException | SQLException e) {
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
+        
+        Document doc = rs.get(index);
+        try {
+            doc.put("id", jTextID.getText());
+            doc.put("titulo", jTextTitulo.getText());
+            doc.put("genero", jTextGenero.getText());
+            doc.put("duracion", Integer.parseInt(jTextDuracion.getText()));
+            doc.put("director", jTextDirector.getText());
+
+            // Si previamente se le había asignado un ID es que ya existía
+            // por lo que se está intentando modificar
+            if (doc.get("_id") != null && !doc.get("_id").toString().isEmpty()) {
+                actualiza(doc);
+            } else {
+                inserta(doc);
+                cargaCamposPelicula();
+                visibilizarBotonera(true);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }//GEN-LAST:event_jButtonGrabarActionPerformed
 
     private void jButtonAnadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnadirActionPerformed
-//        try {
-//            rs.moveToInsertRow();
-//            cargaCamposPelicula();
-//            visibilizarBotonera(false);
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
+        Document doc = new Document();
+        doc.append("id", "");
+        doc.append("titulo", "");
+        doc.append("genero", "");
+        doc.append("duracion", "");
+        doc.append("director", "");
+        rs.add(doc);
+        index = rs.size() - 1;
+        cargaCamposPelicula();
+        visibilizarBotonera(false);
     }//GEN-LAST:event_jButtonAnadirActionPerformed
 
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
@@ -291,5 +300,25 @@ public class Peliculas extends javax.swing.JFrame {
         jButtonSiguiente.setVisible(b);
         jButtonAnadir.setVisible(b);
         jButtonEliminar.setVisible(b);
+    }
+
+    private void actualiza(Document doc) {
+        rs.set(index, doc);
+        Bson filter = eq("id", doc.get("id"));// Define the update query:
+        BasicDBObject updateQuery = new BasicDBObject();
+        updateQuery.append("id", doc.get("id"));
+        updateQuery.append("titulo", doc.get("titulo"));
+        updateQuery.append("genero", doc.get("genero"));
+        updateQuery.append("duracion", doc.get("duracion"));
+        updateQuery.append("director", doc.get("director"));
+        BasicDBObject setQuery = new BasicDBObject();
+        setQuery.append("$set", updateQuery);
+
+        peliculasCollection.updateOne(filter, setQuery);
+    }
+
+    private void inserta(Document doc) {
+        rs.set(index, doc);
+        peliculasCollection.insertOne(doc);
     }
 }
