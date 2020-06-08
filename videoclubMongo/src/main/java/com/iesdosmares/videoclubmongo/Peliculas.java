@@ -38,10 +38,10 @@ public class Peliculas extends javax.swing.JFrame {
     private void cargaCamposPelicula() {
         Document doc = rs.get(index);
         try {
-            jTextID.setText(doc.getInteger("id").toString());
+            jTextID.setText(doc.get("id").toString());
             jTextTitulo.setText(doc.getString("titulo"));
             jTextGenero.setText(doc.getString("genero"));
-            jTextDuracion.setText(doc.getInteger("duracion").toString());
+            jTextDuracion.setText(doc.get("duracion").toString());
             jTextDirector.setText(doc.getString("director"));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -211,25 +211,17 @@ public class Peliculas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnteriorActionPerformed
-//        try {
-//            if (!rs.isFirst()) {
-//                rs.previous();
-//                cargaCamposPelicula();
-//            }
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
+        if (index > 0) {
+            index--;
+            cargaCamposPelicula();
+        }
     }//GEN-LAST:event_jButtonAnteriorActionPerformed
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
-//        try {
-//            if (!rs.isLast()) {
-//                rs.next();
-//                cargaCamposPelicula();
-//            }
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
+        if (rs.size() > index + 1) {
+            index++;
+            cargaCamposPelicula();
+        }
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jButtonGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGrabarActionPerformed
