@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package videoclub;
+package com.iesdosmares.videoclubmongo;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.bson.Document;
 
 /**
  *
@@ -16,28 +20,20 @@ import javax.swing.JOptionPane;
  */
 public class Videoclub extends javax.swing.JFrame {
 
-    /*
-     * Cadena de conexión a la base de datos
-     *   tipo de conexión: jdbc
-     *   driver: mysql
-     *   host de la base de datos: localhost
-     *   nombre de la base de datos: videoclub
-     */
-    private static final String URL = "jdbc:mysql://localhost/videoclub";
-
-    // Nombre de usuario de acceso a la B.D.
-    private static final String USERNAME = "root";
-
-    // Contraseña de acceso a la B.D.
-    private static final String PASSWORD = "alumno";
-
-    Connection conexion;
+    // Como la cadena de conexión la recogemos del sistema, através de las
+    // propiedades del proyecto, no necesitamos constantes de conexión
+    
+    // transformamos Connection a MongoClient
+    MongoClient conexion;
     
     private void abrirConexion(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            conexion=DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (ClassNotFoundException | SQLException e){
+        Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING);
+        String connectionString = System.getProperty("mongodb.uri");
+        try {
+            conexion = MongoClients.create(connectionString);
+            List<Document> databases = conexion.listDatabases().into(new ArrayList<>());
+            databases.forEach(db -> System.out.println(db.toJson()));
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
         
@@ -110,8 +106,8 @@ public class Videoclub extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonMenuPeliculasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMenuPeliculasActionPerformed
-        Peliculas peliculas = new Peliculas(this.conexion);
-        peliculas.setVisible(true);
+//        Peliculas peliculas = new Peliculas(this.conexion);
+//        peliculas.setVisible(true);
     }//GEN-LAST:event_jButtonMenuPeliculasActionPerformed
 
     /**
