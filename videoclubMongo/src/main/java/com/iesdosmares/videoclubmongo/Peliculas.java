@@ -12,6 +12,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -267,14 +268,13 @@ public class Peliculas extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonAnadirActionPerformed
 
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
-//        try {
-//            if (JOptionPane.showConfirmDialog(rootPane, "¿Desea eliminar?", "Confirmación", JOptionPane.YES_NO_OPTION) == 0) {
-//                rs.deleteRow();
-//                cargaCamposPelicula();
-//            }
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
+        // delete one document
+        
+        Document doc = rs.get(index);
+        Bson filter = eq("_id", doc.get("_id"));
+        DeleteResult result = peliculasCollection.deleteOne(filter);
+        index = index > 0 ? index - 1 : index + 1; // fallaría en el caso de rs vacío
+        actualizarRS();
     }//GEN-LAST:event_jButtonEliminarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -303,8 +303,7 @@ public class Peliculas extends javax.swing.JFrame {
     }
 
     private void actualiza(Document doc) {
-        rs.set(index, doc);
-        Bson filter = eq("id", doc.get("id"));// Define the update query:
+        Bson filter = eq("_id", doc.get("_id"));// Define the update query:
         BasicDBObject updateQuery = new BasicDBObject();
         updateQuery.append("id", doc.get("id"));
         updateQuery.append("titulo", doc.get("titulo"));
@@ -315,10 +314,16 @@ public class Peliculas extends javax.swing.JFrame {
         setQuery.append("$set", updateQuery);
 
         peliculasCollection.updateOne(filter, setQuery);
+        actualizarRS();
     }
 
     private void inserta(Document doc) {
-        rs.set(index, doc);
         peliculasCollection.insertOne(doc);
+        actualizarRS();
+    }
+
+    private void actualizarRS() {
+        cargarPeliculas();
+        cargaCamposPelicula();
     }
 }
